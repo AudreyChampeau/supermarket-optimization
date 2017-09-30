@@ -4,7 +4,9 @@
 This script takes as input a series of transactions and provides sets of elements that frequently appear together.
 
 Input : file in which each line contains space-seperated integers
-Output : file in which each line contains a set size, its frequency in the input file and all its elements. All the numbers are separated by a comma and a space.
+Output : file in which each line contains a set size, its frequency in the input file and all its elements. All the numbers are separated by a comma and a space. Example :
+3, 4, 1, 5, 8
+a set containing 3 elements {1, 5, 8} that appear together in 4 different rows
 
 ### Launch ###
 Basic command to execute the script :
