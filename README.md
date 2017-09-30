@@ -1,0 +1,2 @@
+# supermarket-optimization
+Globality exercise
