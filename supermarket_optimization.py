@@ -101,9 +101,12 @@ def get_combinations(r, i, s, start=0):
 			return combinations
 
 # get a dictionary that associates sets of elements containing a specific element to their frequency	
-def get_sets_to_frequency(rows, element):
+def get_sets_to_frequency(rows, element, element_to_delete):
 	sets_to_frequency = {}
 	for row in rows:
+		# delete the previous element that has already been processed (all the sets containing the element have already been processed, so the element can be removed from all the rows to save time)
+		if element_to_delete != None and element_to_delete in row:
+			row.remove(element_to_delete)
 		for set_size in range(min_set_size, max_set_size+1):
 			if element in row:
 				i = row.index(element)
@@ -137,12 +140,16 @@ relevant_rows = retrieve_relevant_rows_from_file(input_file_name)
 print ("Processing...")
 total = len(all_unique_elements)
 counter = 0
-for element in all_unique_elements:
+element_to_delete = None
+# Process elements one by one (instead of having a very big data structure in memory)
+for i, element in enumerate(all_unique_elements):
 	counter += 1
 	print(str(counter)+"/"+str(total))
-	sets_to_frequency = get_sets_to_frequency(relevant_rows, element)
+	sets_to_frequency = get_sets_to_frequency(relevant_rows, element, element_to_delete)
 	relevant_sets_to_frequency = get_relevant_sets(sets_to_frequency)
 	write_output(output_file_name, relevant_sets_to_frequency)
+	# store the value of the element already processed so that it will be ignored in the next loop
+	element_to_delete = element
 
 print ("All done.\nRetrieve results in the file '"+output_file_name+"'.")
 
