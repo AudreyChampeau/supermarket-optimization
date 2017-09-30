@@ -31,3 +31,12 @@ We will obtain :
 Which means that the number "3" is taken into account for two different sets.
 
 2) It is assumed that the elements in the rows are sorted. If it is not the case, the option --needs_sorting (or -b) must be used. Assuming that the rows are sorted instead of verifying it saves time.
+
+### Files ###
+
+Input files :
+retail_25k.dat : the file provided for the exercise
+test.txt : a small test file
+
+Output files :
+output_size-3_freq-4 : the result of the script for input=retail_25k.dat with size=3 and support_level=4 
