@@ -44,7 +44,9 @@ We will obtain :
 
 Which means that the number "3" is taken into account for two different sets.
 
-2) It is assumed that the elements in the rows are sorted. If it is not the case, the option --needs_sorting must be used. Assuming that the rows are sorted instead of verifying it saves time.
+2) The number of possible sets can be huge (10+ millions), therefore the maximum size of the sets has a default value of 5. The user can increase this value (optional argument) but may need to increase the available memory to avoid an error. 
+
+3) It is assumed that the elements in the rows are sorted. If it is not the case, the option --needs_sorting must be used. Assuming that the rows are sorted instead of verifying it saves time.
 
 ### Files ###
 
