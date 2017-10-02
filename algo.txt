@@ -1,0 +1,37 @@
+supermarket_optimization.py
+
+### Simplified algorithm ###
+
+This is a simplified version of the algorithm present in the code.
+
+(1) Go through the transactions :
+	relevant_rows = []
+	element_to_occurrences = {}
+	for each line :
+		if line contains fewer elements than the min_set_size :
+			ignore it
+		else :
+			relevant_rows.add(line)
+			for each element in line :
+				element_to_occurrences.update(element)
+					
+(2) Go through the elements :
+	// to save time and space, each element is entirely processed and then removed from all the rows before the next element is processed
+	// to save space :
+	// - less frequent elements are processed first, so that the greedier elements are processed at the end, when the rows are much lighter
+	// - each set size is processed entirely (with the result written in the output file) so that the main data structure can be emptied before processing the next set size
+	element_to_occurrences.sort(sortBy=occurrences)
+	open the output file f in writing
+	create a map m that maps sets of elements to their frequencies
+	for each element e :
+		for each set size s (minimum : 3, maximum determined by the user) :
+			for each row :
+				delete from the row the previous element processed
+				sets = all sets of size s containing element e in the row
+					for each set in sets :
+						map.update(set)
+			write in output f : 
+				for each set in m :
+					write : <set.size()>, <map.getValue(set)>, <set[0]>, <set[1]>, etc.
+			m = {} // empty the map
+		previous_element = element
