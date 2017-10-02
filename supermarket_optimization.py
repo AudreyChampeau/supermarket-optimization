@@ -50,7 +50,7 @@ def retrieve_relevant_rows_from_file(file_name):
 	with open(file_name, "r") as file:
 		for line in file:
 			split_row = line.strip().split()
-			# update the maximum size of the sets (which is equal to the maximum number of elements for one row)
+			# update the maximum size of the sets (which is equal to the minimum between the maximum number of elements for one row and the user argument)
 			global input_max_set_size
 			l = len(split_row)
 			if (l <= user_max_set_size and l > input_max_set_size):
@@ -111,18 +111,17 @@ def get_sets_to_frequency(rows, element, set_size, previous_element, rare_elemen
 	rows_to_remove = []
 	print("number of rows : "+str(len(rows)))
 	for row in rows:
-		#print("for row in rows")
-		# an element that has been entirely processed can be safely removed, all sets containing it have already been found
+		# in the first call of the function, elements that have a frequency inferior to the min frequency (support level) will be removed
 		if rare_elements != []:
 			row[:] = list(v for v in row if v not in rare_elements)
+		# an element that has been entirely processed can be safely removed, all sets containing it have already been found
 		if previous_element in row:
 			row.remove(previous_element)
+		# after removing elements from the row, if the number of elements is inferior to the set min size, the row can be removed
 		if len(row) < min_set_size:
-			#print("if len(row)")
 			rows_to_remove.append(row)
 			continue
 		if element in row:
-			#print("if element in row")
 			i = row.index(element)
 			combinations = get_combinations(row, i, set_size)
 			# as the rows are sorted, sets that contain the same elements will always be ordered the same way
