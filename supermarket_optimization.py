@@ -18,6 +18,8 @@ parser.add_argument('-o', '--output_file', dest='output_file_name', type=str,
                    help='the name of the output file')
 parser.add_argument('--sets_min_size', dest='sets_min_size', type=int, default=3,
                    help='the minimum size for the sets')
+parser.add_argument('--sets_max_size', dest='sets_max_size', type=int, default=5,
+                   help='the maximum size for the sets')
 parser.add_argument('--support_level', dest='support_level', type=int, default=4,
                    help='the support level (or frequency)')
 parser.add_argument('--needs_sorting', action='store_true',
@@ -28,6 +30,9 @@ args = parser.parse_args()
 # retrieve arguments to initialize global variables
 input_file_name = args.input_file
 min_set_size = args.sets_min_size
+user_max_set_size = args.sets_max_size
+input_max_set_size = 0
+max_set_size = user_max_set_size
 min_frequency = args.support_level
 needs_to_be_sorted = args.needs_sorting
 
@@ -37,7 +42,6 @@ if args.output_file_name != None:
 out = open(output_file_name, "w") # create the file, strings will be appended to it afterwards
 out.close()
 
-max_set_size = 0
 all_unique_elements = {}
 		
 # retrieve rows
@@ -47,9 +51,10 @@ def retrieve_relevant_rows_from_file(file_name):
 		for line in file:
 			split_row = line.strip().split()
 			# update the maximum size of the sets (which is equal to the maximum number of elements for one row)
-			global max_set_size
-			if (len(split_row) > max_set_size):
-				max_set_size = len(split_row)
+			global input_max_set_size
+			l = len(split_row)
+			if (l <= user_max_set_size and l > input_max_set_size):
+				input_max_set_size = l
 			row = []
 			# convert elements of the row from strings to ints
 			split_row = list(int(v) for v in split_row)
@@ -68,6 +73,9 @@ def retrieve_relevant_rows_from_file(file_name):
 			# if the line contains fewer elements than the minimum set size, no valid set can be taken from it, so the line can be safely ignored
 			if (len(row) >= min_set_size):
 				relevant_rows.append(row)
+	global max_set_size
+	if input_max_set_size < user_max_set_size:
+		max_set_size = input_max_set_size
 	return relevant_rows
 	
 # get all combinations of size s containing element e of index i in row r
@@ -98,13 +106,23 @@ def get_string(tuple):
 	return s[:len(s)-1]
 	
 # get a dictionary that associates sets of elements containing a specific element with their frequency
-def get_sets_to_frequency(rows, element, set_size, previous_element):
+def get_sets_to_frequency(rows, element, set_size, previous_element, rare_elements=[]):
 	sets_to_frequency = {}
+	rows_to_remove = []
+	print("number of rows : "+str(len(rows)))
 	for row in rows:
+		#print("for row in rows")
 		# an element that has been entirely processed can be safely removed, all sets containing it have already been found
+		if rare_elements != []:
+			row[:] = list(v for v in row if v not in rare_elements)
 		if previous_element in row:
 			row.remove(previous_element)
+		if len(row) < min_set_size:
+			#print("if len(row)")
+			rows_to_remove.append(row)
+			continue
 		if element in row:
+			#print("if element in row")
 			i = row.index(element)
 			combinations = get_combinations(row, i, set_size)
 			# as the rows are sorted, sets that contain the same elements will always be ordered the same way
@@ -113,6 +131,8 @@ def get_sets_to_frequency(rows, element, set_size, previous_element):
 				if c not in sets_to_frequency:
 					sets_to_frequency[c] = 0
 				sets_to_frequency[c] += 1
+	for row_to_remove in rows_to_remove:
+		rows.remove(row_to_remove)
 	return sets_to_frequency
 	
 # get the sets that have at least the minimum frequency	
@@ -140,7 +160,14 @@ print ("Processing...")
 total = len(all_unique_elements)
 
 # sort all elements by ascending occurrences so that rare elements are processed first and frequent elements are processed in the end, when the rows contain fewer elements
-sorted_aue = sorted(all_unique_elements.items(), key=operator.itemgetter(1), reverse=True)
+rare_elements = []
+sorted_aue = {}
+for k in all_unique_elements:
+	if all_unique_elements[k] < min_set_size:
+		rare_elements.append(k)
+	else:
+		sorted_aue[k] = all_unique_elements[k]
+sorted_aue = sorted(sorted_aue.items(), key=operator.itemgetter(1))
 all_unique_elements = []
 counter = 0
 previous_element = None
@@ -151,7 +178,8 @@ for (element, occ) in sorted_aue:
 	# Process entirely each size at a time (again, to avoid having a very big data structure in memory)
 	for set_size in range(min_set_size, max_set_size+1):
 		print("set size : "+str(set_size))
-		sets_to_frequency = get_sets_to_frequency(relevant_rows, element, set_size, previous_element)
+		sets_to_frequency = get_sets_to_frequency(relevant_rows, element, set_size, previous_element, rare_elements)
+		rare_elements = []
 		print("set_to_frequency size : "+str(len(sets_to_frequency)))
 		relevant_sets_to_frequency = get_relevant_sets(sets_to_frequency)
 		write_output(output_file_name, relevant_sets_to_frequency)
