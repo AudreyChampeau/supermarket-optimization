@@ -22,7 +22,7 @@ python.exe supermarket_optimization.py -h
 
 Example of a command :
 
-python.exe supermarket_optimization.py input.txt -o output.txt --support_level 4 --sets_min_size 5 --needs_sorting
+python.exe supermarket_optimization.py input.txt -o output.txt --support_level 6 --sets_min_size 4 --sets_max_size 5 --needs_sorting
 
 ### Notes ###
 
