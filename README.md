@@ -13,15 +13,12 @@ a set containing 3 elements {1, 5, 8} that appear together in 4 different rows
 
 ### Launch ###
 Basic command to execute the script :
-
 python.exe supermarket_optimization.py [input_file_name]
 
 For more information and optional arguments :
-
 python.exe supermarket_optimization.py -h
 
 Example of a command :
-
 python.exe supermarket_optimization.py input.txt -o output.txt --support_level 4 --sets_min_size 5 --needs_sorting
 
 ### Notes ###
