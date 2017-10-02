@@ -48,14 +48,16 @@ Which means that the number "3" is taken into account for two different sets.
 
 ### Files ###
 
-Input files :
+readme.md : this file
 
-retail_25k.dat : the file provided for the exercise
+supermarket_optimization.py : the script
 
-test.txt : a small test file
-
-Output files :
+retail_25k.dat : the input file provided for the exercise
 
 output_size-3_freq-4 : the result of the script for input=retail_25k.dat with sets_min_size=3 and support_level=4 (and a maximum size set of 5 (inclusive) to avoid a memory error with the computer it was run from)
 
+test.txt : a small input test file
+
 test_output.txt : the output for the test file
+
+algo.txt : a simplified version of the algorithm present in the code
